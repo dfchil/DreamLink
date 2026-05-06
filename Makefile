@@ -1,19 +1,16 @@
-TARGET = test_dclink.elf
-OBJS = src/dc_link.o test.o
+TARGET = libdclink.a
+OBJS = src/dc_link.o
 
-KOS_ROMDISK_DIR = romdisk
+EXTRA_CFLAGS = -I./include
+CPPFLAGS += -I./include
+
 include $(KOS_BASE)/Makefile.rules
 
 all: $(TARGET)
 
-include $(KOS_BASE)/Makefile.prefab
+$(TARGET): $(OBJS)
+	$(KOS_AR) rcs $(TARGET) $(OBJS)
+	$(KOS_RANLIB) $(TARGET)
 
 clean:
-	-rm -f $(TARGET) $(OBJS) romdisk.o romdisk.img
-
-test_dclink.elf: $(OBJS) romdisk.o
-	$(KOS_CC) $(KOS_CFLAGS) $(KOS_LDFLAGS) -o $(TARGET) $(KOS_START) \
-		$(OBJS) romdisk.o $(OBJEXTRA) -L$(KOS_BASE)/lib -l$(KOS_LIBS)
-
-run: $(TARGET)
-	$(KOS_LOADER) $(TARGET)
+	-rm -f $(TARGET) $(OBJS)

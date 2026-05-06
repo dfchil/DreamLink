@@ -1,10 +1,10 @@
-#ifndef __DC_LINK_H
-#define __DC_LINK_H
+#ifndef __DREAMLINK_H
+#define __DREAMLINK_H
 
 #include <stdint.h>
 #include <stdbool.h>
 
-#define DC_LINK_MAGIC 0xDC1B
+#define DREAMLINK_MAGIC 0xDC1B
 
 // Protocol Commands
 typedef enum {
@@ -25,7 +25,7 @@ typedef enum {
 // Frame header structure (packed to ensure exact byte layout)
 #pragma pack(push, 1)
 typedef struct {
-    uint16_t magic;         // DC_LINK_MAGIC
+    uint16_t magic;         // DREAMLINK_MAGIC
     uint32_t frame_id;      // Current lock-step frame ID
     uint8_t  cmd;           // dc_link_cmd_t
     uint16_t payload_len;   // Length of the attached payload
@@ -112,4 +112,4 @@ void dc_link_set_frame_callback(dc_link_frame_cb_t cb);
  */
 void dc_link_poll(void);
 
-#endif // __DC_LINK_H
+#endif // __DREAMLINK_H

@@ -1,4 +1,4 @@
-#include "dc_link.h"
+#include <dreamlink/dreamlink.h>
 #include <kos.h>
 #include <dc/scif.h>
 #include <string.h>
@@ -102,7 +102,7 @@ dc_link_state_t dc_link_get_state(void) {
 
 static void send_raw_packet(dc_link_cmd_t cmd, uint32_t frame_id, const void *payload1, uint16_t len1, const void *payload2, uint16_t len2) {
     dc_link_header_t hdr;
-    hdr.magic = DC_LINK_MAGIC;
+    hdr.magic = DREAMLINK_MAGIC;
     hdr.frame_id = frame_id;
     hdr.cmd = cmd;
     hdr.payload_len = len1 + len2;
@@ -154,14 +154,14 @@ bool dc_link_handshake(uint32_t timeout_ms) {
     handshake_received = false;
     
     // Broadcast a PING
-    uint32_t start_time = timer_ms_get();
+    uint64_t start_time = timer_ms_gettime64();
     send_raw_packet(LINK_CMD_PING, 0, NULL, 0, NULL, 0);
     
     // Poll until we get a response or timeout
     while (!handshake_received) {
         dc_link_poll();
         
-        if (timeout_ms && (timer_ms_get() - start_time) >= timeout_ms) {
+        if (timeout_ms && (timer_ms_gettime64() - start_time) >= timeout_ms) {
             current_state = LINK_STATE_ERROR;
             return false; // Timeout
         }
@@ -184,13 +184,13 @@ int dc_link_sync_frame(uint32_t frame_id, const void *local_payload, uint16_t lo
     // Send our local frame
     dc_link_send_sync_frame(frame_id, local_payload, local_len);
 
-    uint32_t start_time = timer_ms_get();
+    uint64_t start_time = timer_ms_gettime64();
 
     // Lock-step block until remote arrives
     while (!sync_frame_received) {
         dc_link_poll();
 
-        if (timeout_ms && (timer_ms_get() - start_time) >= timeout_ms) {
+        if (timeout_ms && (timer_ms_gettime64() - start_time) >= timeout_ms) {
             return -2; // Timeout occurred, missing a frame
         }
     }
@@ -237,7 +237,7 @@ static void try_parse_packet() {
         rb_peek(magic_buf, 0, 2);
         uint16_t magic = magic_buf[0] | (magic_buf[1] << 8); 
         
-        if (magic != DC_LINK_MAGIC) {
+        if (magic != DREAMLINK_MAGIC) {
             rb_pop(1); // Advance one byte and search again
             continue;
         }

@@ -1,2 +1,3 @@
 ENJ_INCLUDES += -I../../include
-OBJS += ../../src/dc_link.o
+ENJ_LDLIBS += -L../.. -ldclink
+ENJ_INJECT_QFONT:=1

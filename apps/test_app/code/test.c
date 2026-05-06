@@ -1,5 +1,5 @@
 #include <enDjinn/enj_enDjinn.h>
-#include "dc_link.h"
+#include <dreamlink/dreamlink.h>
 #include <stdio.h>
 
 #define MARGIN_LEFT (20 * ENJ_XSCALE)
@@ -60,7 +60,7 @@ void main_mode_updater(void *__unused) {
     // 1. Gather Input
     enj_ctrlr_state_t **ctrls = enj_ctrl_get_states();
     if (ctrls[0]) {
-        local_input.buttons = ctrls[0]->state.buttons;
+        local_input.buttons = ctrls[0]->button.raw;
         if (ctrls[0]->button.LEFT == ENJ_BUTTON_DOWN) local_input.x--;
         if (ctrls[0]->button.RIGHT == ENJ_BUTTON_DOWN) local_input.x++;
         if (ctrls[0]->button.UP == ENJ_BUTTON_DOWN) local_input.y--;

@@ -14,7 +14,7 @@ Include the library in your KOS project and use the lock-step engine within your
 
 ```c
 #include <kos.h>
-#include "dc_link.h"
+#include <dreamlink/dreamlink.h>
 
 int main(int argc, char **argv) {
     // 1. Initialize SCIF at a high baud rate (e.g., 500 kbps)
@@ -75,11 +75,19 @@ dc_link_enqueue_message(EVENT_SPAWN_ENEMY, &enemy_id, sizeof(enemy_id));
 ```
 
 ## Structure
-- `include/dc_link.h`: The public API and protocol structures.
+- `include/dreamlink/dreamlink.h`: The public API and protocol structures.
 - `src/dc_link.c`: The core implementation (Ring buffer, CRC, Packet parsing, Sync loop).
 
 ## Building
 This library uses the standard KallistiOS `Makefile.prefab`. 
+
+Before building, ensure you initialize the required submodules:
+
+```bash
+git submodule update --init --recursive
+```
+
+Then you can build the project:
 
 ```bash
 make
